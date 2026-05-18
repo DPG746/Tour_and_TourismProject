@@ -1,0 +1,512 @@
+Yes, then make **only basic version**. Don’t try to make a big project. Your target should be:
+
+> **Working project in 7–10 days, simple UI, simple backend, easy to explain in viva.**
+
+Because your **auction project frontend is also left**, you should not add login/JWT/payment/email now.
+
+---
+
+# Your Basic Version Final Scope
+
+## Project Title
+
+**Tour and Travel Booking System**
+
+## Main idea
+
+Admin adds tour packages.
+User views packages and books a trip.
+Admin confirms the booking.
+User can see booking status.
+
+That’s it.
+
+---
+
+# What you will build
+
+## 1. Admin can manage packages
+
+Admin can:
+
+```text
+Add package
+View packages
+Update package
+Delete package
+```
+
+Example package:
+
+```text
+Manali Trip
+5 Days
+₹12000
+20 seats
+```
+
+---
+
+## 2. User can view packages
+
+User sees package cards:
+
+```text
+Goa Trip
+Manali Trip
+Kerala Trip
+```
+
+Each card has:
+
+```text
+Image
+Title
+Destination
+Price
+Duration
+Available Seats
+View Details button
+```
+
+---
+
+## 3. User can book package
+
+User fills simple form:
+
+```text
+Name
+Email
+Phone
+Travel Date
+Number of People
+```
+
+Then system creates booking with:
+
+```text
+Status = PENDING
+```
+
+---
+
+## 4. Admin can confirm booking
+
+Admin sees all bookings and clicks:
+
+```text
+Confirm
+Cancel
+```
+
+Status changes:
+
+```text
+PENDING → CONFIRMED
+```
+
+or
+
+```text
+PENDING → CANCELLED
+```
+
+---
+
+## 5. User can check booking
+
+User enters email and sees bookings:
+
+```text
+Package Name
+Travel Date
+People
+Total Amount
+Status
+```
+
+---
+
+# What you should NOT make
+
+Skip these completely:
+
+```text
+Login/Register
+JWT Security
+Payment Gateway
+Email sending
+PDF invoice
+Review system
+Wishlist
+Advanced search
+Calendar
+Hotel booking
+Cab booking
+Coupon system
+```
+
+These will waste your time.
+
+---
+
+# Database: only 3 tables
+
+## 1. `tour_packages`
+
+```sql
+id
+title
+destination
+description
+price
+durationDays
+availableSeats
+imageUrl
+```
+
+---
+
+## 2. `bookings`
+
+```sql
+id
+customerName
+email
+phone
+travelDate
+numberOfPeople
+totalAmount
+status
+package_id
+```
+
+---
+
+## 3. `itineraries`
+
+```sql
+id
+dayNumber
+title
+description
+package_id
+```
+
+If even itinerary feels extra, you can skip separate itinerary table and keep itinerary as text inside package description. But better to keep it if you have time.
+
+---
+
+# Backend structure
+
+Use this exact structure:
+
+```text
+com.tourbooking
+│
+├── controller
+│   ├── PackageController.java
+│   ├── BookingController.java
+│   └── AdminController.java
+│
+├── entity
+│   ├── TourPackage.java
+│   ├── Booking.java
+│   └── Itinerary.java
+│
+├── repository
+│   ├── TourPackageRepository.java
+│   ├── BookingRepository.java
+│   └── ItineraryRepository.java
+│
+├── service
+│   ├── PackageService.java
+│   └── BookingService.java
+│
+└── TourBookingApplication.java
+```
+
+---
+
+# APIs you need only
+
+## Package APIs
+
+```text
+GET    /api/packages
+GET    /api/packages/{id}
+POST   /api/admin/packages
+PUT    /api/admin/packages/{id}
+DELETE /api/admin/packages/{id}
+```
+
+---
+
+## Booking APIs
+
+```text
+POST /api/bookings
+GET  /api/bookings/user/{email}
+GET  /api/admin/bookings
+PUT  /api/admin/bookings/{id}/confirm
+PUT  /api/bookings/{id}/cancel
+```
+
+---
+
+## Optional itinerary APIs
+
+```text
+POST /api/admin/packages/{packageId}/itinerary
+GET  /api/packages/{packageId}/itinerary
+```
+
+---
+
+# React pages only
+
+Make only these pages:
+
+```text
+Home.jsx
+Packages.jsx
+PackageDetails.jsx
+BookingForm.jsx
+MyBookings.jsx
+AdminPackages.jsx
+AdminBookings.jsx
+```
+
+No fancy UI. Simple cards and tables are enough.
+
+---
+
+# 7-Day Plan for You
+
+## Day 1: Setup + Package Entity
+
+Do this:
+
+```text
+Create Spring Boot project
+Connect MySQL
+Create TourPackage entity
+Create repository
+Create package controller
+Make add package API
+Make get all packages API
+Test in Postman
+```
+
+Your goal on Day 1:
+
+```text
+POST /api/admin/packages working
+GET /api/packages working
+```
+
+---
+
+## Day 2: Complete Package CRUD
+
+Do this:
+
+```text
+Get package by id
+Update package
+Delete package
+Add sample packages
+Test all APIs
+```
+
+Your goal:
+
+```text
+Package CRUD complete
+```
+
+---
+
+## Day 3: Booking Backend
+
+Do this:
+
+```text
+Create Booking entity
+Create BookingRepository
+Create BookingService
+Create book package API
+Calculate total amount
+Reduce available seats
+```
+
+Booking logic:
+
+```text
+totalAmount = package price * numberOfPeople
+availableSeats = availableSeats - numberOfPeople
+status = PENDING
+```
+
+Your goal:
+
+```text
+POST /api/bookings working
+```
+
+---
+
+## Day 4: Booking Status APIs
+
+Do this:
+
+```text
+Get bookings by email
+Get all bookings for admin
+Confirm booking
+Cancel booking
+Add seats back on cancel
+```
+
+Your goal:
+
+```text
+Booking system complete
+```
+
+---
+
+## Day 5: React Frontend Basic
+
+Do this:
+
+```text
+Create React app
+Setup routing
+Create Navbar
+Create Home page
+Create Packages page
+Show package cards from backend
+```
+
+Your goal:
+
+```text
+Packages visible on frontend
+```
+
+---
+
+## Day 6: Booking Frontend
+
+Do this:
+
+```text
+Package details page
+Booking form
+My bookings page
+Cancel booking button
+```
+
+Your goal:
+
+```text
+User can book from frontend
+```
+
+---
+
+## Day 7: Admin Frontend + Testing
+
+Do this:
+
+```text
+Admin add package page
+Admin bookings page
+Confirm booking button
+Final testing
+Take screenshots
+```
+
+Your goal:
+
+```text
+Full demo ready
+```
+
+---
+
+# If you have only 5 days
+
+Then do this:
+
+| Day | Work                  |
+| --- | --------------------- |
+| 1   | Package backend       |
+| 2   | Booking backend       |
+| 3   | React package pages   |
+| 4   | React booking pages   |
+| 5   | Admin pages + testing |
+
+Skip itinerary table in 5-day version.
+
+---
+
+# Final demo flow
+
+In your viva/demo, show only this:
+
+```text
+1. Admin adds Manali package
+2. User opens website
+3. User views package
+4. User books package for 2 people
+5. System shows status PENDING
+6. Admin confirms booking
+7. User checks booking status CONFIRMED
+```
+
+This is clean and complete.
+
+---
+
+# Best decision for you
+
+Make this version:
+
+```text
+No login
+No JWT
+No payment
+No email
+Only package + booking + status
+```
+
+This will save time and still look like a real project.
+
+---
+
+# Your first task now
+
+Start backend today.
+
+Create this first:
+
+```text
+TourPackage entity
+TourPackageRepository
+PackageController
+```
+
+And make these 2 APIs work:
+
+```text
+POST /api/admin/packages
+GET  /api/packages
+```
+
+Once these two APIs work, your project has officially started.
+
+If you want, send me your `pom.xml` and `application.properties`, I’ll help you create the first entity and controller step by step.
+ 
