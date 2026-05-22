@@ -1,0 +1,198 @@
+Day 1:
+---
+
+## Step 1: Open Spring Initializr
+
+Go to:
+
+  [Spring Initializr](https://start.spring.io/?utm_source=chatgpt.com)
+
+---
+
+## Step 2: Select these options
+
+### Project
+
+  ```text
+  Maven
+  ```
+
+### Language
+  
+  ```text
+  Java
+  ```
+
+### Spring Boot
+
+  Choose stable version.
+
+Example:
+
+  ```text
+  3.3.x or 3.4.x
+  ```
+
+Do not choose SNAPSHOT.
+
+---
+
+## Step 3: Project Metadata
+
+Fill like this:
+
+```text
+    Group: com.tourbooking
+    Artifact: tourbooking
+    Name: tourbooking
+    Description: Tour and Travel Booking System
+    Package name: com.tourbooking
+    Packaging: Jar
+    Java: 17
+```
+
+Use **Java 17** because Spring Boot 3 works well with Java 17.
+
+---
+
+## Step 4: Add dependencies
+
+Click **Add Dependencies** and add these:
+
+### Required dependencies
+
+        ```text
+        Spring Web
+        Spring Data JPA
+        MySQL Driver
+        Lombok
+        Validation
+        ```
+
+---
+
+## Step 5: Generate project
+
+Click:
+
+      ```text
+      Generate
+      ```
+
+
+---
+
+## Step 6: Extract and open
+
+After download:
+
+    ```text
+    Extract zip
+    Open folder in IntelliJ / Eclipse / VS Code
+    ```
+
+---
+
+## Your final dependency list should be
+
+```text
+    Spring Web
+    Spring Data JPA
+    MySQL Driver
+    Lombok
+    Validation
+```
+
+---
+
+## After opening project
+
+First create database in MySQL:
+
+```sql
+    CREATE DATABASE tour_booking_system;
+```
+
+Then open:
+
+```text
+      src/main/resources/application.properties
+```
+
+and write:
+
+```properties
+        spring.application.name=tourbooking
+        
+        spring.datasource.url=jdbc:mysql://localhost:3306/tour_booking_system
+        spring.datasource.username=root
+        spring.datasource.password=your_mysql_password
+        
+        spring.jpa.hibernate.ddl-auto=update
+        spring.jpa.show-sql=true
+        spring.jpa.properties.hibernate.format_sql=true
+        ```
+
+Change this line:
+
+```properties
+      spring.datasource.password=your_mysql_password
+```
+
+according to your MySQL password.
+
+---
+
+## Then your first coding target
+
+Create these packages:
+
+```text
+    controller
+    entity
+    repository
+    service
+```
+
+Inside:
+
+```text
+    src/main/java/com/tourbooking
+```
+
+Like this:
+
+```text
+      com.tourbooking
+      │
+      ├── controller
+      ├── entity
+      ├── repository
+      ├── service
+      └── TourbookingApplication.java
+      ```
+
+---
+
+## First entity you will create
+
+Create:
+
+```text
+    entity/TourPackage.java
+```
+
+Then we will make:
+
+```text
+      repository/TourPackageRepository.java
+      controller/PackageController.java
+```
+
+First API target:
+
+```text
+      POST /api/admin/packages
+      GET  /api/packages
+```
+
