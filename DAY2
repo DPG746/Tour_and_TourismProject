@@ -687,3 +687,594 @@ How save() works
 How findAll() works
 How SQL is generated automatically
 ```
+
+
+
+
+
+
+Good. Now we go to:
+
+```text id="b6quvq"
+repository/TourPackageRepository.java
+```
+
+This is one of the most important Spring Boot concepts.
+
+If you understand repository properly, your database concepts become strong.
+
+---
+
+# First understand the problem
+
+Suppose you want to:
+
+```text id="rj2wd0"
+Save package
+Get all packages
+Find package by id
+Delete package
+Update package
+```
+
+Without Spring Data JPA, you would manually write SQL like:
+
+```sql id="2r56w6"
+INSERT INTO tour_package ...
+SELECT * FROM tour_package;
+DELETE FROM tour_package WHERE id=1;
+```
+
+and also:
+
+```text id="3ucxb8"
+Open database connection
+Write PreparedStatement
+Execute query
+Close connection
+Handle exceptions
+```
+
+This becomes large and repetitive.
+
+---
+
+# So Spring gives Repository
+
+Repository means:
+
+> A layer that handles database operations.
+
+Think:
+
+```text id="3g5r4w"
+Controller → asks Repository
+Repository → talks to database
+```
+
+---
+
+# Real-life analogy
+
+Imagine:
+
+```text id="pw0k79"
+Controller = Customer
+Repository = Waiter
+Database = Kitchen
+```
+
+Customer does not directly go to kitchen.
+
+Customer tells waiter:
+
+```text id="eqd6tx"
+Bring all packages
+Save this package
+Delete this package
+```
+
+Waiter handles it.
+
+Repository is that waiter.
+
+---
+
+# Now create repository file
+
+Inside:
+
+```text id="7x1luw"
+repository
+```
+
+create:
+
+```text id="vab7of"
+TourPackageRepository.java
+```
+
+---
+
+# First line
+
+```java id="d6uhh2"
+package com.tourbooking.repository;
+```
+
+---
+
+# Meaning
+
+This file belongs to:
+
+```text id="70n0g9"
+repository package
+```
+
+We separate repository files from controller/entity/service.
+
+---
+
+# Next import
+
+```java id="9b72sy"
+import com.tourbooking.entity.TourPackage;
+```
+
+---
+
+# Why import this?
+
+Because this repository works on:
+
+```java id="m0pq0z"
+TourPackage entity
+```
+
+Repository must know which entity/table it manages.
+
+---
+
+# Next import
+
+```java id="t0x2tx"
+import org.springframework.data.jpa.repository.JpaRepository;
+```
+
+---
+
+# MOST IMPORTANT CONCEPT
+
+`JpaRepository` is a ready-made interface provided by Spring Data JPA.
+
+It already contains methods like:
+
+```text id="p0i0lq"
+save()
+findAll()
+findById()
+deleteById()
+count()
+existsById()
+```
+
+So we do not write them manually.
+
+---
+
+# Interview Question
+
+## Q. What is JpaRepository?
+
+Answer:
+
+```text id="7fhh0j"
+JpaRepository is an interface provided by Spring Data JPA.
+It provides built-in methods for CRUD operations,
+pagination, and sorting.
+```
+
+---
+
+# Now create interface
+
+```java id="g6ukyk"
+public interface TourPackageRepository
+```
+
+---
+
+# Why interface and not class?
+
+This is VERY important.
+
+Spring automatically creates implementation at runtime.
+
+You only define:
+
+```text id="hmwy4s"
+what operations you want
+```
+
+Spring internally creates actual object.
+
+---
+
+# Interview Question
+
+## Q. Why repository is interface not class?
+
+Answer:
+
+```text id="dbxyvi"
+Spring Data JPA automatically creates implementation of repository interfaces at runtime,
+so we only define the interface.
+```
+
+---
+
+# Now extend JpaRepository
+
+```java id="d4b4ku"
+extends JpaRepository<TourPackage, Long>
+```
+
+This is VERY important.
+
+---
+
+# Meaning of `<TourPackage, Long>`
+
+This means:
+
+```text id="6ie6tb"
+This repository works with:
+Entity = TourPackage
+Primary key type = Long
+```
+
+Because inside entity:
+
+```java id="ulic0l"
+private Long id;
+```
+
+---
+
+# Full file
+
+Now your complete repository becomes:
+
+```java id="sd4lqb"
+package com.tourbooking.repository;
+
+import com.tourbooking.entity.TourPackage;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TourPackageRepository extends JpaRepository<TourPackage, Long> {
+}
+```
+
+---
+
+# Now understand what you got automatically
+
+By extending:
+
+```java id="2wgo4u"
+JpaRepository<TourPackage, Long>
+```
+
+you automatically get:
+
+---
+
+# 1. save()
+
+```java id="uul0zc"
+tourPackageRepository.save(package1);
+```
+
+Used for:
+
+```text id="r5g53x"
+INSERT
+UPDATE
+```
+
+---
+
+# Internal SQL
+
+If new package:
+
+```sql id="pp25ya"
+INSERT INTO tour_package ...
+```
+
+If existing package:
+
+```sql id="8f0cnm"
+UPDATE tour_package ...
+```
+
+---
+
+# 2. findAll()
+
+```java id="1w1rb0"
+tourPackageRepository.findAll();
+```
+
+Used for:
+
+```text id="1j8y6t"
+Get all packages
+```
+
+Internal SQL:
+
+```sql id="zcr1qi"
+SELECT * FROM tour_package;
+```
+
+---
+
+# 3. findById()
+
+```java id="6p0y4m"
+tourPackageRepository.findById(1L);
+```
+
+Internal SQL:
+
+```sql id="pmwcnv"
+SELECT * FROM tour_package WHERE id = 1;
+```
+
+---
+
+# 4. deleteById()
+
+```java id="7nmk0v"
+tourPackageRepository.deleteById(1L);
+```
+
+Internal SQL:
+
+```sql id="wzvrq4"
+DELETE FROM tour_package WHERE id = 1;
+```
+
+---
+
+# 5. count()
+
+```java id="6df1px"
+tourPackageRepository.count();
+```
+
+Internal SQL:
+
+```sql id="2yz8tz"
+SELECT COUNT(*) FROM tour_package;
+```
+
+---
+
+# 6. existsById()
+
+```java id="nzn4hn"
+tourPackageRepository.existsById(1L);
+```
+
+Checks whether row exists.
+
+---
+
+# AMAZING PART OF SPRING DATA JPA
+
+You can create custom methods by naming convention.
+
+Example:
+
+```java id="u5sdxg"
+List<TourPackage> findByDestination(String destination);
+```
+
+Spring automatically creates SQL.
+
+---
+
+# Example
+
+If you write:
+
+```java id="c4m7h9"
+List<TourPackage> findByDestination(String destination);
+```
+
+Spring internally creates:
+
+```sql id="lq7dwa"
+SELECT * FROM tour_package
+WHERE destination = ?;
+```
+
+without writing SQL manually.
+
+---
+
+# Interview Question
+
+## Q. How does Spring Data JPA reduce boilerplate code?
+
+Answer:
+
+```text id="5cgz76"
+Spring Data JPA provides repository interfaces with built-in CRUD methods
+and generates SQL queries automatically using method names.
+```
+
+---
+
+# Internal flow
+
+Suppose controller calls:
+
+```java id="nr8axg"
+tourPackageRepository.findAll();
+```
+
+Flow:
+
+```text id="0iwfzk"
+Controller
+    ↓
+Repository
+    ↓
+Hibernate/JPA
+    ↓
+SQL Query
+    ↓
+MySQL
+    ↓
+Result returned as Java objects
+```
+
+---
+
+# VERY IMPORTANT CONCEPT
+
+Repository returns:
+
+```text id="jlwm1n"
+Java objects
+```
+
+not database rows directly.
+
+Example:
+
+Database row:
+
+| id | title  |
+| -- | ------ |
+| 1  | Manali |
+
+becomes:
+
+```java id="g05t7u"
+TourPackage object
+```
+
+---
+
+# What is Hibernate?
+
+Hibernate is the ORM tool used internally by Spring Data JPA.
+
+ORM means:
+
+```text id="a92nfh"
+Object Relational Mapping
+```
+
+Meaning:
+
+```text id="cjlwmf"
+Java object ↔ Database table
+```
+
+---
+
+# Interview Question
+
+## Q. What is ORM?
+
+Answer:
+
+```text id="e8v8tq"
+ORM stands for Object Relational Mapping.
+It maps Java objects to relational database tables.
+Hibernate is a popular ORM framework.
+```
+
+---
+
+# Interview Question
+
+## Q. Difference between JPA and Hibernate?
+
+Answer:
+
+```text id="7d99x2"
+JPA is a specification.
+Hibernate is an implementation of JPA.
+Spring Data JPA uses Hibernate internally.
+```
+
+---
+
+# IMPORTANT
+
+Right now your repository has no methods written manually.
+
+Still it works because:
+
+```text id="7k4d54"
+JpaRepository already provides methods.
+```
+
+This surprises many beginners.
+
+---
+
+# Your task now
+
+Create this exact file:
+
+```java id="4b4yei"
+package com.tourbooking.repository;
+
+import com.tourbooking.entity.TourPackage;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TourPackageRepository extends JpaRepository<TourPackage, Long> {
+}
+```
+
+---
+
+# Then understand this deeply
+
+```java id="jlwm2o"
+JpaRepository<TourPackage, Long>
+```
+
+because this is the heart of repository layer.
+
+---
+
+# After this
+
+Next we go to:
+
+```text id="cgh35d"
+PackageController.java
+```
+
+and there I will explain:
+
+```text id="yx7hpn"
+@RestController
+@RequestMapping
+@GetMapping
+@PostMapping
+@RequestBody
+Dependency Injection
+API flow
+JSON → Java object conversion
+```
+
