@@ -1,0 +1,689 @@
+You are right.
+You should understand **why** you are writing each thing, not just paste code.
+
+So now let’s do it properly.
+
+We will take only **one small part** and understand it deeply.
+
+---
+
+# Today’s Goal
+
+Only understand and create:
+
+```text id="omf76v"
+TourPackage.java
+```
+
+That’s it.
+
+No controller. No repository. No Postman now.
+
+---
+
+# First understand what is happening
+
+Your project needs to store tour package data like:
+
+```text id="ew6u1w"
+Manali Trip
+Goa Trip
+Kerala Trip
+```
+
+Each package has information:
+
+```text id="f7t1tk"
+title
+destination
+price
+duration
+available seats
+description
+```
+
+Where should this data be stored?
+
+Inside MySQL database.
+
+Database stores data in **tables**.
+
+So we need a table like:
+
+| id | title       | destination | price |
+| -- | ----------- | ----------- | ----- |
+| 1  | Manali Trip | Manali      | 12000 |
+| 2  | Goa Trip    | Goa         | 8000  |
+
+---
+
+# But Java cannot directly understand MySQL tables
+
+Java understands:
+
+```text id="npv6z0"
+classes
+objects
+```
+
+Database understands:
+
+```text id="2q37zt"
+tables
+rows
+```
+
+So Spring Boot + JPA converts:
+
+```text id="0n9ikd"
+Java class  ↔  Database table
+```
+
+This is why we create:
+
+```text id="h3x9ww"
+TourPackage.java
+```
+
+---
+
+# What is Entity?
+
+Entity means:
+
+> A Java class that represents a database table.
+
+So:
+
+```java id="r2xg6p"
+TourPackage
+```
+
+becomes:
+
+```sql id="1v2l4l"
+tour_package
+```
+
+inside MySQL.
+
+---
+
+# Now create this file slowly
+
+Inside:
+
+```text id="m7hq1x"
+entity
+```
+
+create:
+
+```text id="5js0wd"
+TourPackage.java
+```
+
+---
+
+# Step-by-step code explanation
+
+Now write only this first:
+
+```java id="3lv1f6"
+package com.tourbooking.entity;
+```
+
+---
+
+## What does this mean?
+
+This tells Java:
+
+```text id="jlwmx7"
+This file belongs to entity package.
+```
+
+Packages help organize files.
+
+Like folders:
+
+```text id="91c4by"
+controller → APIs
+repository → database operations
+entity → database models
+service → business logic
+```
+
+---
+
+# Next line
+
+```java id="8gqjx0"
+import jakarta.persistence.*;
+```
+
+---
+
+## What is this?
+
+We need special JPA annotations like:
+
+```text id="tyltvl"
+@Entity
+@Id
+@GeneratedValue
+@Column
+```
+
+These come from:
+
+```java id="hyhtij"
+jakarta.persistence
+```
+
+---
+
+# What is JPA?
+
+JPA means:
+
+```text id="j2yowq"
+Java Persistence API
+```
+
+Persistence means:
+
+```text id="3bkfha"
+store data permanently in database
+```
+
+Without JPA, you write SQL manually:
+
+```sql id="v7wnqo"
+INSERT INTO tour_package ...
+```
+
+With JPA, Spring handles it automatically.
+
+---
+
+# Interview Question
+
+## Q. What is JPA?
+
+Answer:
+
+```text id="8cbxzw"
+JPA is a specification used to map Java objects to database tables.
+It helps us perform database operations without writing much SQL.
+```
+
+---
+
+# Next lines
+
+```java id="g7okzg"
+import lombok.*;
+```
+
+---
+
+# Why Lombok?
+
+Normally in Java, you write:
+
+```java id="jlwmj9"
+getters
+setters
+constructors
+toString
+```
+
+for every class.
+
+That becomes very lengthy.
+
+Lombok automatically generates them.
+
+---
+
+# Example WITHOUT Lombok
+
+```java id="lb7g1v"
+public String getTitle() {
+    return title;
+}
+
+public void setTitle(String title) {
+    this.title = title;
+}
+```
+
+You would write this for every variable.
+
+---
+
+# WITH Lombok
+
+Just:
+
+```java id="4w4tm6"
+@Data
+```
+
+and Lombok creates them automatically.
+
+---
+
+# Interview Question
+
+## Q. Why use Lombok?
+
+Answer:
+
+```text id="czcf1p"
+Lombok reduces boilerplate code by automatically generating
+getters, setters, constructors, and other methods.
+```
+
+---
+
+# Now write class annotations
+
+```java id="jkz8oz"
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+```
+
+---
+
+# What is `@Entity`?
+
+This is VERY important.
+
+It tells Spring:
+
+```text id="c4l4wk"
+This Java class should become a database table.
+```
+
+Without `@Entity`, Spring ignores this class.
+
+---
+
+# Example
+
+```java id="7s6c9v"
+@Entity
+public class TourPackage
+```
+
+means:
+
+```text id="s8dbxy"
+Create table for TourPackage
+```
+
+---
+
+# Interview Question
+
+## Q. What is `@Entity`?
+
+Answer:
+
+```text id="whj2h5"
+@Entity is a JPA annotation used to mark a class as a database entity.
+It tells Hibernate to map the class to a database table.
+```
+
+---
+
+# What is `@Data`?
+
+```java id="rm63ua"
+@Data
+```
+
+creates automatically:
+
+```text id="ntr3lg"
+getter
+setter
+toString
+equals
+hashCode
+```
+
+---
+
+# What is `@NoArgsConstructor`?
+
+Creates empty constructor:
+
+```java id="yk7f95"
+TourPackage package = new TourPackage();
+```
+
+JPA needs this internally.
+
+---
+
+# What is `@AllArgsConstructor`?
+
+Creates constructor with all variables.
+
+Example:
+
+```java id="zclg2h"
+new TourPackage(id, title, destination, price ...)
+```
+
+---
+
+# Now create class
+
+```java id="2b2qkq"
+public class TourPackage {
+```
+
+---
+
+# Why class name is singular?
+
+We use:
+
+```text id="20ow7u"
+TourPackage
+```
+
+not:
+
+```text id="3g9x9e"
+TourPackages
+```
+
+Because one object represents one row.
+
+Example:
+
+```text id="n6g5jx"
+One package = one object
+```
+
+---
+
+# Now create ID field
+
+```java id="whfdsa"
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+```
+
+---
+
+# What is `@Id`?
+
+This tells Spring:
+
+```text id="gxudt8"
+This field is primary key.
+```
+
+---
+
+# What is primary key?
+
+Primary key uniquely identifies each row.
+
+Example:
+
+| id | title  |
+| -- | ------ |
+| 1  | Manali |
+| 2  | Goa    |
+
+`id` is unique.
+
+---
+
+# What is `@GeneratedValue`?
+
+This means:
+
+```text id="g6dbke"
+Database automatically generates ID.
+```
+
+Like:
+
+```text id="1v6i7k"
+1
+2
+3
+4
+```
+
+---
+
+# What is `GenerationType.IDENTITY`?
+
+This means MySQL uses:
+
+```sql id="1u3tpx"
+AUTO_INCREMENT
+```
+
+---
+
+# Interview Question
+
+## Q. Why use `@GeneratedValue(strategy = IDENTITY)`?
+
+Answer:
+
+```text id="4x64s3"
+It tells the database to automatically generate primary key values using auto increment.
+```
+
+---
+
+# Why `Long` not `int`?
+
+Because IDs can grow large.
+
+Also wrapper classes (`Long`) are preferred in JPA.
+
+---
+
+# Now create normal fields
+
+```java id="q1g0u6"
+private String title;
+private String destination;
+```
+
+---
+
+# What will happen?
+
+Spring creates columns:
+
+| title | destination |
+| ----- | ----------- |
+
+inside database table.
+
+---
+
+# Next field
+
+```java id="00fr1o"
+@Column(length = 1000)
+private String description;
+```
+
+---
+
+# Why `@Column(length = 1000)`?
+
+Normally String length is 255.
+
+But description can be large.
+
+So we increase size.
+
+---
+
+# Interview Question
+
+## Q. Why use `@Column`?
+
+Answer:
+
+```text id="2op1kl"
+@Column is used to customize database column properties such as length, nullable, unique, etc.
+```
+
+---
+
+# Remaining fields
+
+```java id="v3cv6l"
+private double price;
+private int durationDays;
+private int availableSeats;
+private String imageUrl;
+```
+
+---
+
+# Final complete class
+
+Now combine everything:
+
+```java id="3x4kif"
+package com.tourbooking.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TourPackage {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+
+    private String destination;
+
+    @Column(length = 1000)
+    private String description;
+
+    private double price;
+
+    private int durationDays;
+
+    private int availableSeats;
+
+    private String imageUrl;
+}
+```
+
+---
+
+# What happens now internally?
+
+Spring Boot sees:
+
+```java id="jlwm9k"
+@Entity
+```
+
+Then Hibernate creates table automatically:
+
+```sql id="vb58j9"
+CREATE TABLE tour_package (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    destination VARCHAR(255),
+    description VARCHAR(1000),
+    price DOUBLE,
+    duration_days INT,
+    available_seats INT,
+    image_url VARCHAR(255)
+);
+```
+
+---
+
+# MOST IMPORTANT CONCEPT
+
+```text id="6sh44m"
+Java Object  ↔  Entity  ↔  Database Table
+```
+
+Example:
+
+```java id="0j43n6"
+TourPackage package1 = new TourPackage();
+```
+
+becomes row in database.
+
+---
+
+# Your task now
+
+Only do this:
+
+```text id="cq8z1v"
+1. Create TourPackage.java
+2. Understand every annotation
+3. Run application
+4. Check whether table gets created in MySQL
+```
+
+---
+
+# VERY IMPORTANT CHECK
+
+After running app, open MySQL and run:
+
+```sql id="txmv5k"
+USE tour_booking_system;
+
+SHOW TABLES;
+```
+
+You should see:
+
+```text id="es5pgh"
+tour_package
+```
+
+This will make your concept strong.
+
+After this, we will move to:
+
+```text id="6aj3s2"
+TourPackageRepository.java
+```
+
+and I will explain:
+
+```text id="0g5r91"
+What is repository
+What JpaRepository does internally
+How save() works
+How findAll() works
+How SQL is generated automatically
+```
